@@ -63,15 +63,37 @@ app.delete("/api/persons/:id", (request, response) => {
 app.post("/api/persons/", (request, response) => {
   const person = request.body;
 
-  const randomNumber = `0${Math.floor(1000000 + Math.random() * 9000000)}`;
+  if (!person.name) {
+    return response.status(400).json({
+      error: "name missing",
+    });
+  }
+
+  if (!person.number) {
+    return response.status(400).json({
+      error: "number missing",
+    });
+  }
+
+  const existingPerson = persons.find((p) => p.name === person.name);
+  if (existingPerson) {
+    return response.status(400).json({ error: "name must be unique" });
+  }
+
+  const generateId = () => {
+    const maxId =
+      persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
+    return String(maxId + 1);
+  };
 
   const newPerson = {
-    id: Math.floor(Math.random() * 1000).toString(),
+    id: generateId(),
     name: person.name,
-    number: randomNumber,
+    number: person.number,
   };
 
   persons.push(newPerson);
+  response.json(person);
 });
 
 const PORT = 3001;
