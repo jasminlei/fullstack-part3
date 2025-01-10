@@ -13,6 +13,9 @@ morgan.token("post-data", (req) => {
 
 app.use(morgan(":method :url :status - :response-time ms - :post-data"));
 
+const cors = require("cors");
+app.use(cors());
+
 let persons = [
   {
     id: "1",
