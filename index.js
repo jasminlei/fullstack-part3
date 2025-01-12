@@ -20,8 +20,8 @@ const cors = require("cors");
 app.use(cors());
 
 const errorHandler = (error, request, response, next) => {
-  console.error("Error message:", error.message);
   console.error("Error name:", error.name);
+  console.error("Error message:", error.message);
 
   if (error.name === "CastError") {
     return response.status(400).json({ error: "malformatted id" });
@@ -104,7 +104,7 @@ app.post("/api/persons/", (request, response, next) => {
     });
 
     newPerson
-      .save()
+      .save({ runValidators: true, context: "query" })
       .then((savedPerson) => {
         response.status(201).json(savedPerson);
       })
