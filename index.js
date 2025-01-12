@@ -34,29 +34,6 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-let persons = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
 });
@@ -68,12 +45,13 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/info", (request, response) => {
-  const total = persons.length;
   const currentTime = new Date();
-  response.send(
-    `<p>Phonebook has info for ${total} people</p>
-    <p>${currentTime}</p>`
-  );
+  Person.countDocuments({}).then((result) => {
+    response.send(
+      `<p>Phonebook has info for ${result} people</p>
+            <p>${currentTime}</p>`
+    );
+  });
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
